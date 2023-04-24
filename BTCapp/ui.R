@@ -1,33 +1,13 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
+library(bslib)
 
-# Define UI for application that draws a histogram
-fluidPage(
+navbarPage(
 
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
+  theme = bs_theme(bootswatch = "spacelab"),
+  title = "BTCapp",
 
-    # Sidebar with a slider input for number of bins
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-            plotOutput("distPlot")
-        )
+  tabPanel("Precio",
+                 div(style = "width: 80%; margin: auto;", plotlyOutput("price")),
+                 div(style = "width: 60%; margin: auto;", dataTableOutput("year_var"))
     )
 )

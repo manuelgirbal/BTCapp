@@ -27,12 +27,14 @@ btcprice <- as_tibble(data.frame(date = as.Date(
 rm(list = setdiff(ls(), "btcprice"))
 
 
-#Computing daily variation:
-btcprice <- btcprice %>%
-                  arrange(date) %>%
-                  mutate(var = round((price/lag(price)-1)*100,1))
-
-btcprice[is.na(btcprice)]<-0
+#Computing yearly variation (of avg price per year):
+year_var <- btcprice %>%
+                  mutate(year = year(date)) %>%
+                  group_by(year) %>%
+                  summarise(avg_price = mean(price, na.rm = T)) %>%
+                  arrange(year) %>%
+                  mutate(year_var = round((avg_price/lag(avg_price)-1)*100,1)) %>%
+                  replace(is.na(.), 0)
 
 
 #Plot 1 - Price:
@@ -43,6 +45,4 @@ ggplotly(ggplot(btcprice, aes(date, price)) +
                 scale_x_date(date_breaks = "1 year", date_labels = "%Y")
         )
 
-
-#Plot 2 - Price variation:
 
