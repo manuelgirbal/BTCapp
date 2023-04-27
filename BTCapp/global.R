@@ -27,10 +27,10 @@ price = round(prices[,2],1))
 rm(list = setdiff(ls(), "btcprice"))
 
 #Computing yearly variation (of avg price per year):
-year_var <- btcprice %>%
+yearly <- btcprice %>%
   mutate(year = year(date)) %>%
   group_by(year) %>%
   summarise(avg_price = round(mean(price, na.rm = T),2)) %>%
   arrange(year) %>%
-  mutate(year_var = round((avg_price/lag(avg_price)-1)*100,1)) %>%
+  mutate(year_var = round((avg_price/lag(avg_price)-1),2)) %>%
   replace(is.na(.), 0)
