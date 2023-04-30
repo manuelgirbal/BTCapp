@@ -1,0 +1,13 @@
+name: BTCapp
+title: BTCapp
+username:
+account: manuelgirbal
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8996133
+bundleId: 7157142
+url: https://manuelgg.shinyapps.io/BTCapp/
+when: 1682896572.82294
+lastSyncTime: 1682896572.82296
+asMultiple: FALSE
+asStatic: FALSE

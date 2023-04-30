@@ -43,4 +43,8 @@ function(input, output, session) {
   })
 
 
+  output$nodes <- renderPlot({
+    nodes_map
+  })
+
 }
