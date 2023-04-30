@@ -10,9 +10,14 @@ function(input, output, session) {
                geom_line() +
                ylab("USD Value") +
                xlab("Date") +
-               scale_x_date(date_breaks = "1 year", date_labels = "%Y")
+               scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+               theme(plot.background = element_rect(fill = "#A6A6A6"),
+                     panel.background = element_rect(fill = "#A6A6A6"),
+                     panel.grid.major = element_line(colour = "#7A7A7A")
+               )
     )
   })
+
 
 
   output$yearly <- DT::renderDataTable({
