@@ -6,7 +6,7 @@ library(plotly)
 function(input, output, session) {
 
   output$price <- renderPlotly({
-    ggplotly(ggplot(btcprice, aes(date, price)) +
+    ggplot(btcprice, aes(date, price)) +
                geom_line() +
                ylab("USD Value") +
                xlab("Date") +
@@ -15,7 +15,6 @@ function(input, output, session) {
                      panel.background = element_rect(fill = "#A6A6A6"),
                      panel.grid.major = element_line(colour = "#7A7A7A")
                )
-    )
   })
 
 
@@ -43,8 +42,29 @@ function(input, output, session) {
   })
 
 
+  output$vbox1 <- renderValueBox({
+    valueBox(
+      value = nrow(nodes_df),
+      subtitle = "Total nodes",
+      icon = icon("fa-sharp fa-solid fa-users"),
+    )
+  })
+
+
   output$nodes <- renderPlot({
     nodes_map
+  })
+
+
+  output$nodestable <- DT::renderDataTable({
+    datatable(nodes_df %>%
+                group_by(city, timezone) %>%
+                summarise(n = n()) %>%
+                arrange(desc(n)),
+              options = list(
+                lengthChange = FALSE,
+                columnDefs = list(list(className = 'dt-center', targets = "_all"))),
+              rownames = FALSE)
   })
 
 }

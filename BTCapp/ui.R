@@ -1,5 +1,6 @@
 library(shiny)
 library(bslib)
+library(shinydashboard)
 
 navbarPage(
 
@@ -11,6 +12,14 @@ navbarPage(
                  div(style = "width: 60%; margin: auto;", dataTableOutput("yearly"))
     ),
   tabPanel("Network",
+           fluidRow(
+             column(
+               offset = 5,
+               width = 5,
+               valueBoxOutput("vbox1")
+             )
+           ),
            div(style = "width: 80%; margin: auto;", plotOutput("nodes")),
+           div(style = "width: 60%; margin: auto;", dataTableOutput("nodestable"))
   )
 )
