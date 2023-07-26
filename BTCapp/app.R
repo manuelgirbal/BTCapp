@@ -88,6 +88,7 @@ server <- function(input, output, session) {
     nodes_map
   })
 
+  ## Esta tabla todavía no existe!
   output$txs <- renderPlotly({
     ggplot(df_m, aes(month, txs)) +
       geom_line() +

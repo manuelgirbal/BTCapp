@@ -1,7 +1,12 @@
+## Error: en este script estaba sumando los bytes de cada día y no las txs... que están dentro de cada TSV
+## Abandonado porque implica descargar más de 50gb de data para bajar cada TSV file
+
 library(tidyverse)
 library(rvest)
 library(stringr)
 library(lubridate)
+
+options(scipen=999)
 
 # Reading "Blockchair Database Dumps" historic bitcoin transactions table:
 blockchair <- read_html("https://gz.blockchair.com/bitcoin/transactions/")
@@ -17,7 +22,6 @@ df <- tibble(a = txs_list) %>%
   unnest(a)
 
 
-## OJO ACÁ: hay números que dicen 23M en vez del millón en número... reemplazar la M por los ceros
 # Separating columns by whitespace or gap:
 df <- df %>%
   slice(-1) %>%
@@ -25,6 +29,8 @@ df <- df %>%
 
 # Transforming some data:
 df <- df %>%
+  mutate(value = str_replace_all(value, 'M', '000000')) %>%
+  mutate(value = str_replace_all(value, 'K', '000')) %>%
   transmute(
     date = dmy(date),
     txs = as.numeric(value)
@@ -32,10 +38,8 @@ df <- df %>%
 
 # Grouping by month:
 df_m <- df %>%
-  group_by(date) %>%
-  summarise(txs = sum(txs))
-
-df_m <- df %>%
   mutate(month = format_ISO8601(date, precision = "ym")) %>%
   group_by(month) %>%
   summarize(txs = sum(txs))
+
+
