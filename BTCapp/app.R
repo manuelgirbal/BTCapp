@@ -29,7 +29,7 @@ ui <- navbarPage(
              )
            ),
            div(style = "width: 80%; margin: auto;", plotOutput("nodes")),
-           div(style = "width: 60%; margin: auto;", dataTableOutput("nodestable"))
+           div(style = "width: 80%; margin: auto;", plotlyOutput("txs"))
   )
 )
 
@@ -88,17 +88,28 @@ server <- function(input, output, session) {
     nodes_map
   })
 
-
-  output$nodestable <- DT::renderDataTable({
-    datatable(nodes_df %>%
-                group_by(city, timezone) %>%
-                summarise(n = n()) %>%
-                arrange(desc(n)),
-              options = list(
-                lengthChange = FALSE,
-                columnDefs = list(list(className = 'dt-center', targets = "_all"))),
-              rownames = FALSE)
+  output$txs <- renderPlotly({
+    ggplot(df_m, aes(month, txs)) +
+      geom_line() +
+      ylab("Transactions") +
+      xlab("Date") +
+      # scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+      theme(plot.background = element_rect(fill = "#A6A6A6"),
+            panel.background = element_rect(fill = "#A6A6A6"),
+            panel.grid.major = element_line(colour = "#7A7A7A")
+      )
   })
+
+  # output$nodestable <- DT::renderDataTable({
+  #   datatable(nodes_df %>%
+  #               group_by(city, timezone) %>%
+  #               summarise(n = n()) %>%
+  #               arrange(desc(n)),
+  #             options = list(
+  #               lengthChange = FALSE,
+  #               columnDefs = list(list(className = 'dt-center', targets = "_all"))),
+  #             rownames = FALSE)
+  # })
 
 }
 
