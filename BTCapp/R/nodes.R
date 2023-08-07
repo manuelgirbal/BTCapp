@@ -1,3 +1,5 @@
+sudo su - -c "R -q -e "install.packages('rnaturalearth', repos='http://cran.rstudio.com/')""
+
 library(tidyverse)
 library(readr)
 library(countrycode)
@@ -23,6 +25,7 @@ node_counts <- nodes_df %>%
 # Adding polygon data to dataset
 
 world_nodes <- ne_countries(scale = "medium", returnclass = "sf") %>%
+  filter(admin != "Antarctica") %>%
   mutate(country_code = iso_a2) %>%
   left_join(node_counts, by = "country_code")
 
@@ -31,6 +34,8 @@ world_nodes <- ne_countries(scale = "medium", returnclass = "sf") %>%
 nodes_map <- world_nodes %>%
   ggplot() +
   geom_sf(aes(fill = nodes)) +
+  labs(title = "Bitcoin's currently running nodes by country",
+       caption = "Source: https://bitnodes.io/") +
   scale_fill_gradient2(low = "white", mid = "lightgrey", high = "darkorange", na.value = "white") +
   theme(plot.background = element_rect(fill = "#A6A6A6"),
         panel.background = element_rect(fill = "#A6A6A6"),

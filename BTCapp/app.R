@@ -5,6 +5,7 @@ library(DT)
 library(shinydashboard)
 library(bslib)
 
+options(scipen=999)
 
 ### bitnodes.R needs to be run manually because of "Could not resolve host: bitnodes.io" error in logs
 
@@ -29,6 +30,13 @@ ui <- navbarPage(
              )
            ),
            div(style = "width: 80%; margin: auto;", plotlyOutput("nodes")),
+           fluidRow(
+             column(
+               offset = 5,
+               width = 5,
+               valueBoxOutput("vbox2")
+             )
+           ),
            div(style = "width: 80%; margin: auto;", plotlyOutput("txs"))
   )
 )
@@ -46,10 +54,10 @@ server <- function(input, output, session) {
       scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
       theme(plot.background = element_rect(fill = "#A6A6A6"),
             panel.background = element_rect(fill = "#A6A6A6"),
-            panel.grid.major = element_line(colour = "#7A7A7A")
-      )
-  }) %>%
-    bindCache(btcprice, Sys.Date())
+            panel.grid.major = element_line(colour = "#7A7A7A"))+
+              labs(title = "Bitcoin's average yearly USD price",
+                   subtitle = "Source: https://www.coingecko.com/")
+  })
 
 
   output$yearly <- DT::renderDataTable({
@@ -80,7 +88,7 @@ server <- function(input, output, session) {
     valueBox(
       value = nrow(nodes_df),
       subtitle = "Total nodes",
-      icon = icon("fa-sharp fa-solid fa-users"),
+      icon = icon("fa-sharp fa-solid fa-globe"),
     )
   })
 
@@ -91,11 +99,22 @@ server <- function(input, output, session) {
     bindCache(nodes_map, Sys.Date())
 
 
+  output$vbox2 <- renderValueBox({
+    valueBox(
+      value = df_txs %>% summarise(total_txs = sum(txs)),
+      subtitle = "Total txs",
+      icon = icon("fa-sharp fa-solid fa-users"),
+    )
+  })
+
+
   output$txs <- renderPlotly({
     ggplot(df_txs, aes(date, txs)) +
       geom_line() +
       ylab("Transactions") +
       xlab("Date") +
+      labs(title = "Bitcoin's monthly transactions",
+           caption = "Source: https://flipsidecrypto.xyz/") +
       scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
       theme(plot.background = element_rect(fill = "#A6A6A6"),
             panel.background = element_rect(fill = "#A6A6A6"),
@@ -103,18 +122,6 @@ server <- function(input, output, session) {
       )
   }) %>%
     bindCache(df_txs, Sys.Date())
-
-
-  # output$nodestable <- DT::renderDataTable({
-  #   datatable(nodes_df %>%
-  #               group_by(city, timezone) %>%
-  #               summarise(n = n()) %>%
-  #               arrange(desc(n)),
-  #             options = list(
-  #               lengthChange = FALSE,
-  #               columnDefs = list(list(className = 'dt-center', targets = "_all"))),
-  #             rownames = FALSE)
-  # })
 
 }
 
