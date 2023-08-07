@@ -28,7 +28,7 @@ ui <- navbarPage(
                valueBoxOutput("vbox1")
              )
            ),
-           div(style = "width: 80%; margin: auto;", plotOutput("nodes")),
+           div(style = "width: 80%; margin: auto;", plotlyOutput("nodes")),
            div(style = "width: 80%; margin: auto;", plotlyOutput("txs"))
   )
 )
@@ -48,8 +48,8 @@ server <- function(input, output, session) {
             panel.background = element_rect(fill = "#A6A6A6"),
             panel.grid.major = element_line(colour = "#7A7A7A")
       )
-  })
-
+  }) %>%
+    bindCache(btcprice, Sys.Date())
 
 
   output$yearly <- DT::renderDataTable({
@@ -75,6 +75,7 @@ server <- function(input, output, session) {
   })
 
 
+
   output$vbox1 <- renderValueBox({
     valueBox(
       value = nrow(nodes_df),
@@ -84,9 +85,11 @@ server <- function(input, output, session) {
   })
 
 
-  output$nodes <- renderPlot({
+  output$nodes <- renderPlotly({
     nodes_map
-  })
+  }) %>%
+    bindCache(nodes_map, Sys.Date())
+
 
   output$txs <- renderPlotly({
     ggplot(df_txs, aes(date, txs)) +
@@ -98,7 +101,9 @@ server <- function(input, output, session) {
             panel.background = element_rect(fill = "#A6A6A6"),
             panel.grid.major = element_line(colour = "#7A7A7A")
       )
-  })
+  }) %>%
+    bindCache(df_txs, Sys.Date())
+
 
   # output$nodestable <- DT::renderDataTable({
   #   datatable(nodes_df %>%
