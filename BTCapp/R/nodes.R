@@ -1,5 +1,3 @@
-sudo su - -c "R -q -e "install.packages('rnaturalearth', repos='http://cran.rstudio.com/')""
-
 library(tidyverse)
 library(readr)
 library(countrycode)
