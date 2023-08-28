@@ -2,6 +2,7 @@ library(tidyverse)
 library(readr)
 library(countrycode)
 library(rnaturalearth)
+library(rnaturalearthdata)
 
 ## Reading the csv created by file "bitnodes.r"
 nodes_df <- read.csv("R/nodes.csv")

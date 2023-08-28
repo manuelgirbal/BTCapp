@@ -5,9 +5,9 @@ account: manuelgirbal
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 8996133
-bundleId: 7540216
+bundleId: 7614586
 url: https://manuelgg.shinyapps.io/BTCapp/
-when: 1691424920.89253
-lastSyncTime: 1691424920.89255
+when: 1693190690.99007
+lastSyncTime: 1693190690.99009
 asMultiple: FALSE
 asStatic: FALSE
