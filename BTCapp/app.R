@@ -24,16 +24,21 @@ ui <- navbarPage(
   tabPanel("Network",
            fluidRow(
              column(
-               offset = 5,
-               width = 5,
+               width = 4, # Adjust the width as needed
+               offset = 3,
                valueBoxOutput("vbox1")
+             ),
+             column(
+               width = 4, # Adjust the width as needed
+               offset = 1,
+               valueBoxOutput("vbox1.1")
              )
            ),
            div(style = "width: 80%; margin: auto;", plotlyOutput("nodes")),
            fluidRow(
              column(
-               offset = 5,
-               width = 5,
+               width = 5, # Adjust the width as needed
+               offset = 5, # Adjust the offset as needed
                valueBoxOutput("vbox2")
              )
            ),
@@ -49,7 +54,7 @@ server <- function(input, output, session) {
   output$price <- renderPlotly({
     ggplot(btcprice, aes(date, price)) +
       geom_line() +
-      ylab("USD Value") +
+      ylab("USD Price") +
       xlab("Date") +
       scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
       theme(plot.background = element_rect(fill = "#A6A6A6"),
@@ -88,6 +93,14 @@ server <- function(input, output, session) {
     valueBox(
       value = nrow(nodes_df),
       subtitle = "Total nodes",
+      icon = icon("fa-sharp fa-solid fa-globe"),
+    )
+  })
+
+  output$vbox1.1 <- renderValueBox({
+    valueBox(
+      value = nrow(nodes_df[nodes_df$asn == "TOR", ]),
+      subtitle = "Tor nodes",
       icon = icon("fa-sharp fa-solid fa-globe"),
     )
   })
