@@ -32,3 +32,14 @@ yearly <- btcprice %>%
   arrange(year) %>%
   mutate(year_var = round((avg_price/lag(avg_price)-1),2)) %>%
   replace(is.na(.), 0)
+
+# Creating plot
+btcprice_plot <- btcprice %>%
+  ggplot(aes(date, price)) +
+  geom_line() +
+  ylab("USD Price") +
+  xlab("Date") +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  theme(plot.background = element_rect(fill = "#A6A6A6"),
+        panel.background = element_rect(fill = "#A6A6A6"),
+        panel.grid.major = element_line(colour = "#7A7A7A"))
