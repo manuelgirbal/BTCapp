@@ -10,12 +10,32 @@ options(scipen=999)
 ### bitnodes.R needs to be run manually because of "Could not resolve host: bitnodes.io" error in logs
 
 
+## Define the introductory text for the sidebar
+intro_text <- "This is a Bitcoin Shiny app. Find the source code [here](https://github.com/manuelgirbal/BTCapp)."
+
+##### Revisar esto: https://www.r-bloggers.com/2023/03/how-to-customise-the-style-of-your-shinydashboard-shiny-app/
+
+
 ## UI
 
 ui <- navbarPage(
-
   theme = bs_theme(bootswatch = "slate"),
   title = "BTCapp",
+
+  ## Add a sidebar with the introductory text
+  navbarMenu("Intro",
+             tabPanel("Introductory Text",
+                      fluidRow(
+                        column(
+                          width = 8,
+                          offset = 2,
+                          tags$div(
+                            HTML(intro_text)
+                          )
+                        )
+                      )
+             )
+  ),
 
   tabPanel("Price",
            div(style = "width: 80%; margin: auto;", plotlyOutput("price")),
@@ -47,22 +67,23 @@ ui <- navbarPage(
 )
 
 
+
 ## Server
 
 server <- function(input, output, session) {
 
-  output$price <- renderPlotly({
-    ggplot(btcprice, aes(date, price)) +
-      geom_line() +
-      ylab("USD Price") +
-      xlab("Date") +
-      scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-      theme(plot.background = element_rect(fill = "#A6A6A6"),
-            panel.background = element_rect(fill = "#A6A6A6"),
-            panel.grid.major = element_line(colour = "#7A7A7A"))+
-              labs(title = "Bitcoin's average yearly USD price",
-                   subtitle = "Source: https://www.coingecko.com/")
-  })
+output$price <- renderPlotly({
+  ggplotly(
+    btcprice_plot
+  ) %>%
+    layout(title = list(text = paste0("Bitcoin's average yearly USD price",
+                                      "<br>",
+                                      "<sup>",
+                                      "Source: https://www.coingecko.com/",
+                                      "</sup>" )))
+})
+
+
 
 
   output$yearly <- DT::renderDataTable({
@@ -107,7 +128,12 @@ server <- function(input, output, session) {
 
 
   output$nodes <- renderPlotly({
-    nodes_map
+    ggplotly(nodes_map) %>%
+      layout(title = list(text = paste0("Bitcoin's currently running nodes by country",
+                                        "<br>",
+                                        "<sup>",
+                                        "Source: https://bitnodes.io/",
+                                        "</sup>" )))
   }) %>%
     bindCache(nodes_map, Sys.Date())
 
@@ -122,17 +148,14 @@ server <- function(input, output, session) {
 
 
   output$txs <- renderPlotly({
-    ggplot(df_txs, aes(date, txs)) +
-      geom_line() +
-      ylab("Transactions") +
-      xlab("Date") +
-      labs(title = "Bitcoin's monthly transactions",
-           caption = "Source: https://flipsidecrypto.xyz/") +
-      scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-      theme(plot.background = element_rect(fill = "#A6A6A6"),
-            panel.background = element_rect(fill = "#A6A6A6"),
-            panel.grid.major = element_line(colour = "#7A7A7A")
-      )
+    ggplotly(
+      btctxs_plot
+      ) %>%
+      layout(title = list(text = paste0("Bitcoin's monthly transactions",
+                                        "<br>",
+                                        "<sup>",
+                                        "Source: https://flipsidecrypto.xyz/",
+                                        "</sup>" )))
   }) %>%
     bindCache(df_txs, Sys.Date())
 
