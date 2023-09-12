@@ -10,33 +10,18 @@ options(scipen=999)
 ### bitnodes.R needs to be run manually because of "Could not resolve host: bitnodes.io" error in logs
 
 
-## Define the introductory text for the sidebar
-intro_text <- "This is a Bitcoin Shiny app. Find the source code [here](https://github.com/manuelgirbal/BTCapp)."
-
-##### Revisar esto: https://www.r-bloggers.com/2023/03/how-to-customise-the-style-of-your-shinydashboard-shiny-app/
-
-
 ## UI
 
 ui <- navbarPage(
   theme = bs_theme(bootswatch = "slate"),
-  title = "BTCapp",
-
-  ## Add a sidebar with the introductory text
-  navbarMenu("Intro",
-             tabPanel("Introductory Text",
-                      fluidRow(
-                        column(
-                          width = 8,
-                          offset = 2,
-                          tags$div(
-                            HTML(intro_text)
-                          )
-                        )
-                      )
-             )
-  ),
-
+  title =
+      div(
+        "A Bitcoin Shiny app",
+        div(
+          HTML("<a href='https://github.com/manuelgirbal/BTCapp'>Find the source code here</a>"),
+          style = "font-size: 12px"
+        )
+      ),
   tabPanel("Price",
            div(style = "width: 80%; margin: auto;", plotlyOutput("price")),
            div(style = "width: 60%; margin: auto;", dataTableOutput("yearly"))
