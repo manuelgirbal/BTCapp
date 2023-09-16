@@ -129,7 +129,8 @@ output$price <- renderPlotly({
       subtitle = "Total txs",
       icon = icon("fa-sharp fa-solid fa-users"),
     )
-  })
+  }) %>%
+    bindCache(df_txs, Sys.Date())
 
 
   output$txs <- renderPlotly({
@@ -142,7 +143,7 @@ output$price <- renderPlotly({
                                         "Source: https://flipsidecrypto.xyz/",
                                         "</sup>" )))
   }) %>%
-    bindCache(df_txs, Sys.Date())
+    bindCache(btctxs_plot, Sys.Date())
 
 }
 
